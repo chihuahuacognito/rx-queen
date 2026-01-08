@@ -10,6 +10,10 @@ export async function getTrendingGames(
     genre?: string
 ) {
     try {
+        // Debug: Check if we can connect
+        console.log('[getTrends] Starting query for', country, category);
+        console.log('[getTrends] DATABASE_URL exists:', !!process.env.DATABASE_URL);
+
         // Dynamic Sort Column based on Category
         const rankCol = category === 'grossing' ? 'current_rank_grossing' : 'current_rank_free';
         const changeCol = category === 'grossing' ? 'rank_change_grossing' : 'rank_change_free';
@@ -33,9 +37,12 @@ export async function getTrendingGames(
             LIMIT $2 OFFSET $3;
         `, [country, limit, offset, genre || null]);
 
+        console.log('[getTrends] Query returned', result.rows.length, 'rows');
         return result.rows;
     } catch (error) {
-        console.error('Database Error:', error);
-        return [];
+        console.error('[getTrends] Database Error:', error);
+        // Re-throw so Vercel shows error instead of empty page
+        throw error;
     }
 }
+
