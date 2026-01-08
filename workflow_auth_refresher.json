@@ -1,0 +1,73 @@
+{
+    "name": "Auth Refresher - AppMagic",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hours": 12
+                        }
+                    ]
+                }
+            },
+            "name": "Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "command": "npm run auth:appmagic"
+            },
+            "name": "Run Puppeteer Auth",
+            "type": "n8n-nodes-base.executeCommand",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ],
+            "credentials": {}
+        },
+        {
+            "parameters": {
+                "jsCode": "const output = JSON.parse(items[0].json.stdout);\nreturn [{json: output}];"
+            },
+            "name": "Parse JSON",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ]
+        }
+    ],
+    "connections": {
+        "Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Run Puppeteer Auth",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Run Puppeteer Auth": {
+            "main": [
+                [
+                    {
+                        "node": "Parse JSON",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

@@ -1,0 +1,63 @@
+name: Daily Scrape & Auto-Tag
+
+on:
+  schedule:
+    - cron: '0 6 * * *'  # 6:00 AM UTC daily (11:30 AM IST)
+  workflow_dispatch:  # Allow manual trigger
+
+env:
+  NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+
+jobs:
+  scrape-and-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      # ===== SCRAPING =====
+      - name: Install Scraper Dependencies
+        run: cd scraper && npm install
+      
+      - name: Run Scraper (US Market)
+        run: node scraper/google_play_fetch.js US 200
+      
+      - name: Run Scraper (Other Markets)
+        run: |
+          node scraper/google_play_fetch.js GB 200
+          node scraper/google_play_fetch.js JP 200
+          node scraper/google_play_fetch.js IN 200
+      
+      # ===== AUTO-TAGGING (Optional - only if GEMINI_API_KEY is set) =====
+      - name: Install Tools Dependencies
+        run: cd tools && npm install csv-parse csv-stringify 2>/dev/null || true
+      
+      - name: Run Auto-Tagger (New Games Only)
+        if: env.GEMINI_API_KEY != ''
+        run: node tools/auto_tag_subgenres.js 20
+        continue-on-error: true
+      
+      # ===== COMMIT DATA =====
+      - name: Commit New Data
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add data/
+          git diff --staged --quiet || git commit -m "Daily scrape - $(date +%Y-%m-%d)"
+          git push
+      
+      # ===== NOTIFY =====
+      - name: Send Notification
+        if: env.NTFY_TOPIC != ''
+        run: |
+          curl -s -d "🎮 Daily scrape complete! Check for new subgenre tags to review." \
+            -H "Title: Rx Queen Update" \
+            -H "Priority: default" \
+            -H "Tags: video_game" \
+            https://ntfy.sh/${{ secrets.NTFY_TOPIC }}

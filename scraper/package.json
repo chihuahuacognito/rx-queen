@@ -1,0 +1,17 @@
+{
+    "name": "rx-queen-scraper",
+    "version": "1.0.0",
+    "description": "Headless auth service for Gaming Insights Platform",
+    "main": "auth_service.js",
+    "scripts": {
+        "auth:appmagic": "node auth_appmagic.js",
+        "auth:dataai": "node auth_dataai.js"
+    },
+    "dependencies": {
+        "dotenv": "^16.3.1",
+        "google-play-scraper": "^10.0.0",
+        "puppeteer": "^21.0.0",
+        "puppeteer-extra": "^3.3.6",
+        "puppeteer-extra-plugin-stealth": "^2.11.2"
+    }
+}

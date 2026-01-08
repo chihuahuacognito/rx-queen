@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subgenre Review Tool - Rx Queen</title>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --card: #14141f;
+            --accent: #00d4ff;
+            --green: #00ff88;
+            --red: #ff4466;
+            --text: #ffffff;
+            --muted: #888899;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: var(--accent);
+            font-size: 2rem;
+        }
+
+        .stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .stat {
+            background: var(--card);
+            padding: 1rem 2rem;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .game-card {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border: 1px solid #333;
+        }
+
+        .game-card.approved {
+            border-color: var(--green);
+            opacity: 0.6;
+        }
+
+        .game-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: #333;
+        }
+
+        .game-info {
+            flex: 1;
+        }
+
+        .game-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .game-genre {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .suggestion-box {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .suggestion-label {
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .suggestion-value {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-approve {
+            background: var(--green);
+            color: var(--bg);
+        }
+
+        .btn-edit {
+            background: #333;
+            color: var(--text);
+        }
+
+        .btn-skip {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid #333;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+        }
+
+        .edit-input {
+            background: #222;
+            border: 1px solid var(--accent);
+            color: var(--text);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            width: 200px;
+        }
+
+        .export-section {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .btn-export {
+            background: var(--accent);
+            color: var(--bg);
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+        }
+
+        .file-input {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .file-input input {
+            display: none;
+        }
+
+        .file-input label {
+            background: #333;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>🎮 Subgenre Review Tool</h1>
+        <p style="color: var(--muted);">Review AI suggestions, approve or edit, then export.</p>
+    </div>
+
+    <div class="file-input">
+        <label for="csvFile">📁 Load subgenres_suggestions.csv</label>
+        <input type="file" id="csvFile" accept=".csv">
+    </div>
+
+    <div class="stats" id="stats" style="display: none;">
+        <div class="stat">
+            <div class="stat-value" id="totalCount">0</div>
+            <div class="stat-label">Total</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="approvedCount">0</div>
+            <div class="stat-label">Approved</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="pendingCount">0</div>
+            <div class="stat-label">Pending</div>
+        </div>
+    </div>
+
+    <div id="gameList"></div>
+
+    <div class="export-section" id="exportSection" style="display: none;">
+        <button class="btn btn-export" onclick="exportCSV()">📥 Export Approved to CSV</button>
+    </div>
+
+    <script>
+        let games = [];
+
+        document.getElementById('csvFile').addEventListener('change', function (e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    parseCSV(e.target.result);
+                };
+                reader.readAsText(file);
+            }
+        });
+
+        function parseCSV(text) {
+            const lines = text.trim().split('\n');
+            const headers = lines[0].split(',');
+
+            games = lines.slice(1).map(line => {
+                const values = line.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || [];
+                const obj = {};
+                headers.forEach((h, i) => {
+                    obj[h.trim()] = (values[i] || '').replace(/"/g, '').trim();
+                });
+                return obj;
+            });
+
+            renderGames();
+            document.getElementById('stats').style.display = 'flex';
+            document.getElementById('exportSection').style.display = 'block';
+        }
+
+        function renderGames() {
+            const list = document.getElementById('gameList');
+            list.innerHTML = '';
+
+            games.forEach((game, index) => {
+                const isApproved = game.approved === 'true';
+                const card = document.createElement('div');
+                card.className = `game-card ${isApproved ? 'approved' : ''}`;
+                card.id = `game-${index}`;
+
+                const playStoreUrl = `https://play.google.com/store/apps/details?id=${game.store_id}`;
+
+                card.innerHTML = `
+                    <div class="game-info">
+                        <div class="game-name">
+                            <a href="${playStoreUrl}" target="_blank" style="color: var(--accent); text-decoration: none;">
+                                ${game.name} 🔗
+                            </a>
+                        </div>
+                        <div class="game-genre">Genre: ${game.genre} | ID: ${game.store_id}</div>
+                    </div>
+                    <div class="suggestion-box">
+                        <div>
+                            <div class="suggestion-label">AI Suggestion</div>
+                            <div class="suggestion-value" id="suggestion-${index}">${game.suggested_subgenre}</div>
+                        </div>
+                    </div>
+                    <div class="actions" id="actions-${index}">
+                        ${isApproved ? '<span style="color: var(--green);">✓ Approved</span>' : `
+                            <button class="btn btn-approve" onclick="approve(${index})">✓ Approve</button>
+                            <button class="btn btn-edit" onclick="showEdit(${index})">✏️ Edit</button>
+                            <button class="btn btn-skip" onclick="skip(${index})">Skip</button>
+                        `}
+                    </div>
+                `;
+
+                list.appendChild(card);
+            });
+
+            updateStats();
+        }
+
+        function approve(index) {
+            games[index].approved = 'true';
+            games[index].final_subgenre = games[index].suggested_subgenre;
+            renderGames();
+        }
+
+        function showEdit(index) {
+            const actionsDiv = document.getElementById(`actions-${index}`);
+            actionsDiv.innerHTML = `
+                <input type="text" class="edit-input" id="edit-${index}" value="${games[index].suggested_subgenre}" placeholder="Enter subgenre">
+                <button class="btn btn-approve" onclick="saveEdit(${index})">Save</button>
+                <button class="btn btn-skip" onclick="renderGames()">Cancel</button>
+            `;
+            document.getElementById(`edit-${index}`).focus();
+        }
+
+        function saveEdit(index) {
+            const value = document.getElementById(`edit-${index}`).value.trim();
+            if (value) {
+                games[index].suggested_subgenre = value;
+                games[index].final_subgenre = value;
+                games[index].approved = 'true';
+            }
+            renderGames();
+        }
+
+        function skip(index) {
+            const card = document.getElementById(`game-${index}`);
+            card.style.display = 'none';
+        }
+
+        function updateStats() {
+            const total = games.length;
+            const approved = games.filter(g => g.approved === 'true').length;
+            document.getElementById('totalCount').textContent = total;
+            document.getElementById('approvedCount').textContent = approved;
+            document.getElementById('pendingCount').textContent = total - approved;
+        }
+
+        function exportCSV() {
+            const approved = games.filter(g => g.approved === 'true');
+            let csv = 'store_id,name,genre,subgenre\n';
+            approved.forEach(g => {
+                csv += `"${g.store_id}","${g.name}","${g.genre}","${g.final_subgenre || g.suggested_subgenre}"\n`;
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'subgenres_approved.csv';
+            a.click();
+
+            alert(`✅ Exported ${approved.length} approved games!`);
+        }
+    </script>
+</body>
+
+</html>

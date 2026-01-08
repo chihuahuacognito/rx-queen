@@ -1,0 +1,160 @@
+{
+    "name": "Google Play - Public Ingest",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "hours",
+                            "hours": 6
+                        }
+                    ]
+                }
+            },
+            "name": "Schedule",
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "command": "node \"C:\\Users\\Hyprbolictimechamber\\2026projects\\Rx Queen\\scraper\\google_play_fetch.js\" ALL 200"
+            },
+            "name": "Fetch Google Play",
+            "type": "n8n-nodes-base.executeCommand",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Merge Logic: Read from file to avoid memory buffer limits\nconst fs = require('fs');\nconst merged = {};\n\n// The previous node now returns a FILE PATH, not the JSON itself\nconst filePath = items[0].json.stdout.trim();\n\nif (!fs.existsSync(filePath)) {\n  throw new Error(`Scrape file not found: ${filePath}`);\n}\n\n// Read the big file directly\nconst fileContent = fs.readFileSync(filePath, 'utf8');\nconst rawData = JSON.parse(fileContent);\n\n// We can delete the file after reading to save space (optional)\n// fs.unlinkSync(filePath);\n\nrawData.forEach(item => {\n  const id = item.appId;\n  const country = item.country || 'US';\n  if (!id) return;\n  \n  const key = `${id}_${country}`;\n  \n  if (!merged[key]) {\n    merged[key] = {\n      store_id: item.appId,\n      name: item.title,\n      publisher: item.developer,\n      genre: item.genre || 'Unknown',\n      icon_url: item.icon,\n      store_url: item.url,\n      country_code: country,\n      // Snapshot Data Defaults\n      rank_free: null,\n      rank_paid: null,\n      rank_grossing: null,\n      rating: item.score || 0,\n      price: item.price || 0,\n      captured_at: item.fetchedAt\n    };\n  }\n  \n  // Map Ranks\n  if (item.collection === 'TOP_FREE') merged[key].rank_free = item.rank;\n  if (item.collection === 'TOP_PAID') merged[key].rank_paid = item.rank;\n  if (item.collection === 'GROSSING') merged[key].rank_grossing = item.rank;\n});\n\nreturn Object.values(merged).map(i => ({json: i}));"
+            },
+            "name": "Merge & Format",
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 1,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "upsert",
+                "schema": {
+                    "__rl": true,
+                    "value": "public",
+                    "mode": "list",
+                    "cachedResultName": "public"
+                },
+                "table": {
+                    "__rl": true,
+                    "value": "games",
+                    "mode": "list",
+                    "cachedResultName": "games"
+                },
+                "columns": {
+                    "mappingMode": "defineBelow",
+                    "value": {
+                        "store_id": "={{$json[\"store_id\"]}}",
+                        "name": "={{$json[\"name\"]}}",
+                        "publisher": "={{$json[\"publisher\"]}}",
+                        "genre": "={{$json[\"genre\"]}}",
+                        "icon_url": "={{$json[\"icon_url\"]}}",
+                        "store_url": "={{$json[\"store_url\"]}}",
+                        "last_updated": "={{$json[\"last_updated\"]}}",
+                        "current_version": "={{$json[\"current_version\"]}}",
+                        "recent_changes": "={{$json[\"recent_changes\"]}}"
+                    },
+                    "matchingColumns": [
+                        "store_id"
+                    ]
+                }
+            },
+            "name": "Upsert Games",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 4.2,
+            "position": [
+                850,
+                300
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "YOUR_CREDENTIAL_ID",
+                    "name": "Postgres Local"
+                }
+            }
+        },
+        {
+            "parameters": {
+                "operation": "executeQuery",
+                "query": "=INSERT INTO snapshots (game_id, country_code, rank_free, rank_paid, rank_grossing, rating, price, captured_at)\nSELECT id, '{{$json[\"country_code\"]}}', {{$json[\"rank_free\"] || 'NULL'}}, {{$json[\"rank_paid\"] || 'NULL'}}, {{$json[\"rank_grossing\"] || 'NULL'}}, {{$json[\"rating\"]}}, {{$json[\"price\"]}}, NOW()\nFROM games WHERE store_id = '{{$json[\"store_id\"]}}';"
+            },
+            "name": "Insert Snapshots",
+            "type": "n8n-nodes-base.postgres",
+            "typeVersion": 4.2,
+            "position": [
+                1050,
+                300
+            ],
+            "credentials": {
+                "postgres": {
+                    "id": "YOUR_CREDENTIAL_ID",
+                    "name": "Postgres Local"
+                }
+            }
+        }
+    ],
+    "connections": {
+        "Schedule": {
+            "main": [
+                [
+                    {
+                        "node": "Fetch Google Play",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Fetch Google Play": {
+            "main": [
+                [
+                    {
+                        "node": "Merge & Format",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Merge & Format": {
+            "main": [
+                [
+                    {
+                        "node": "Upsert Games",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Upsert Games": {
+            "main": [
+                [
+                    {
+                        "node": "Insert Snapshots",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

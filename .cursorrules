@@ -1,0 +1,27 @@
+# Antigravity / Agent Behavior Rules
+
+You are an intelligent coding assistant working on the "Rx Queen" project. 
+
+## 🧠 MANDATORY Context Loading
+Before answering questions about architecture, bugs, or new features, you MUST verify your plan against the Project Knowledge Base. 
+
+**Always prioritize these two documents:**
+1.  **Product Strategy & Status**: `docs/product_retrospective.md`
+    *   *Check this for*: Sprint goals, feature roadmap, and "Lesson Learned" regarding product direction.
+    *   *Key Constraint*: We prioritize "Public Data" over "Paid APIs".
+
+2.  **Engineering Standards**: `docs/engineering_handbook.md`
+    *   *Check this for*: Code patterns, testing tools, and forbidden actions.
+    *   *Key Constraints*:
+        *   ❌ NO Postgres `upsert` in n8n (Use Raw SQL).
+        *   ❌ NO unquoted paths in Windows commands.
+        *   ❌ NO passing large JSONs in n8n memory (Use file handoff).
+
+## 🛡️ Coding Style & Protocols
+*   **Frontend**: Next.js App Router, Server Actions (No API Routes), Tailwind CSS.
+*   **Backend**: Node.js scripts (external to n8n), Postgres (Raw SQL preferred for complex logic).
+*   **Automation**: Always validate n8n workflows with `node tools/n8n_debugger.js` before marking a task as done.
+
+## ⚠️ Critical Reminders
+*   If the user asks for a scraping feature, verify `docs/engineering_handbook.md` protocol "File-Based Handoff".
+*   If the user asks for database writes, verify `Protocol A` (Raw SQL).
