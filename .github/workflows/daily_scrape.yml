@@ -53,30 +53,15 @@ jobs:
         if: env.SUPABASE_URL != ''
         run: node ingest_to_supabase.js
       
-      # ===== COMMIT DATA =====
-      - name: Commit New Data
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-          git add data/
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "Daily scrape - $(date +%Y-%m-%d)"
-            # Try to push, with retries for race conditions
-            for i in 1 2 3; do
-              git fetch origin main
-              git rebase origin/main && git push && break
-              echo "Push attempt $i failed, retrying..."
-              sleep 5
-            done
-          fi
+      # NOTE: JSON files are NOT committed to repo.
+      # Data goes directly to Supabase, eliminating git race conditions.
+      # If you need file backups, consider uploading to cloud storage instead.
       
       # ===== NOTIFY =====
       - name: Send Notification
         if: env.NTFY_TOPIC != ''
         run: |
-          curl -s -d "🎮 Daily scrape complete! Check for new subgenre tags to review." \
+          curl -s -d "🎮 Daily scrape complete! Data ingested to Supabase." \
             -H "Title: Rx Queen Update" \
             -H "Priority: default" \
             -H "Tags: video_game" \
