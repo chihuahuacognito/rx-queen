@@ -59,9 +59,18 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
           git add data/
-          git diff --staged --quiet || git commit -m "Daily scrape - $(date +%Y-%m-%d)"
-          git pull --rebase origin main || true
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Daily scrape - $(date +%Y-%m-%d)"
+            # Try to push, with retries for race conditions
+            for i in 1 2 3; do
+              git fetch origin main
+              git rebase origin/main && git push && break
+              echo "Push attempt $i failed, retrying..."
+              sleep 5
+            done
+          fi
       
       # ===== NOTIFY =====
       - name: Send Notification
