@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-radius: var(--radius);
+}
+
+:root {
+  /* Dark Space Theme */
+  --background: 222 47% 11%;
+  /* #0f172a - Slate 900 */
+  --foreground: 210 40% 98%;
+  /* Slate 50 */
+
+  --card: 222 47% 10%;
+  --card-foreground: 210 40% 98%;
+
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+
+  --primary: 262 83% 58%;
+  /* Purple-600 */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 217 33% 17%;
+  /* Slate 800 */
+  --secondary-foreground: 210 40% 98%;
+
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+
+  --accent: 262 83% 58%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 210 40% 98%;
+
+  --border: 217 33% 17%;
+  --input: 217 33% 17%;
+  --ring: 262 83% 58%;
+
+  --radius: 0.5rem;
+}
+
+body {
+  background-color: #0f172a;
+  /* Slate 900 */
+  color: white;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.text-gradient {
+  background: linear-gradient(to right, #c084fc, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
