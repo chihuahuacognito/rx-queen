@@ -56,8 +56,8 @@ async function ingestLatestFiles() {
             const gameIds = {}; // store_id -> db_id
 
             for (const game of data) {
-                // Determine store_id (some older JSONs might miss 'id' field)
-                let storeId = game.id;
+                // Determine store_id (use appId field from scraper)
+                let storeId = game.appId || game.id;
                 if (!storeId && game.url) {
                     const match = game.url.match(/id=([^&]+)/);
                     if (match) storeId = match[1];
@@ -93,8 +93,8 @@ async function ingestLatestFiles() {
             const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
             for (const game of data) {
-                // Determine store_id (same logic as above)
-                let storeId = game.id;
+                // Determine store_id (use appId field from scraper)
+                let storeId = game.appId || game.id;
                 if (!storeId && game.url) {
                     const match = game.url.match(/id=([^&]+)/);
                     if (match) storeId = match[1];
@@ -121,6 +121,10 @@ async function ingestLatestFiles() {
                 `, [gameId, country, capturedAt]);
 
                 if (exists.rows.length === 0) {
+                    // Determine rank fields based on collection type
+                    const rankFree = game.collection === 'TOP_FREE' ? game.rank : null;
+                    const rankGrossing = game.collection === 'TOP_GROSSING' ? game.rank : null;
+
                     await client.query(`
                         INSERT INTO snapshots (
                             game_id, country_code, rank_grossing, rank_free, 
@@ -129,9 +133,9 @@ async function ingestLatestFiles() {
                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                     `, [
                         gameId, country,
-                        game.rank_grossing || null,
-                        game.rank_free || null,
-                        parseFloat(game.rating) || 0,
+                        rankGrossing,
+                        rankFree,
+                        parseFloat(game.scoreText) || 0,
                         0, // reviews count
                         revenue, downloads, capturedAt
                     ]);

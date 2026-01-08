@@ -9,7 +9,7 @@ interface PageProps {
 
 export default async function Home({ searchParams }: PageProps) {
   const sp = await searchParams; // Next.js 15 requires awaiting searchParams
-  const country = (sp.country as string) || 'US';
+  const country = (sp.country as string) || 'IN';
   const category = (sp.category as 'free' | 'grossing') || 'free';
   const genre = (sp.genre as string) || undefined;
 
