@@ -43,6 +43,14 @@ jobs:
         run: node tools/auto_tag_subgenres.js 20
         continue-on-error: true
       
+      # ===== INGESTION =====
+      - name: Install Root Dependencies
+        run: npm install pg
+
+      - name: Ingest to Supabase
+        if: env.SUPABASE_URL != ''
+        run: node ingest_to_supabase.js
+      
       # ===== COMMIT DATA =====
       - name: Commit New Data
         run: |
