@@ -4,7 +4,7 @@ const path = require('path');
 const { Pool } = require('pg');
 
 const POOL_CONFIG = {
-    connectionString: 'postgresql://postgres.fakdvsdjraxwxpidpbhz:QIoZLh3xkrcvUG@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres',
+    connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 };
 

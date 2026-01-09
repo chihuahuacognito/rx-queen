@@ -3,7 +3,7 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
     // Using Supabase connection as per User feedback
-    connectionString: process.env.DATABASE_URL || 'postgresql://postgres.fakdvsdjraxwxpidpbhz:QIoZLh3xkrcvUG@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres'
+    connectionString: process.env.DATABASE_URL
 });
 
 async function runTests() {
