@@ -145,8 +145,12 @@ async function ingestLatestFiles() {
             console.log(`   ✅ Snapshots inserted: ${snapshotsInserted}`);
         }
 
-        // Refresh Views (Optional but good)
-        // await client.query('REFRESH MATERIALIZED VIEW ...'); 
+        // Refresh Materialized View (Sprint 3.2.QA)
+        console.log('\n🔄 Refreshing Materialized View (daily_trends)...');
+        const refreshStart = Date.now();
+        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY daily_trends');
+        const refreshDuration = Date.now() - refreshStart;
+        console.log(`   ✅ View refreshed in ${(refreshDuration / 1000).toFixed(1)}s`);
 
     } catch (e) {
         console.error('❌ Error ingestion:', e);
@@ -154,6 +158,7 @@ async function ingestLatestFiles() {
     } finally {
         client.release();
         pool.end();
+        console.log('\n🎉 Ingestion Complete!');
     }
 }
 

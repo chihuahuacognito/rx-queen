@@ -69,14 +69,21 @@ The Mobile Market Intelligence (MMI) sector is a **"Red Ocean"** dominated by Se
 *   [x] Rank #1 Highlight: Special styling for top position.
 *   [ ] *Open Issue*: Duplicate entries (deduplication needed).
 
-### Sprint 3: Data Reliability & Revenue Proxies 🚧 (In Progress Jan 7-14)
-*   [x] Manual Scrape: Ran scraper, ingested Jan 7 data.
-*   [ ] **Scheduled Scraper**: Set up daily automation (see Section 6).
+### Sprint 3.1: "Market Pulse" & Command Center 🚧 (In Progress Jan 8-10)
+*   **Goal**: Create a high-density "Command Center" home page.
+*   [x] **Views**: `genre_stats` & `power_rankings` SQL views created.
+*   [ ] **Fastest Movers**: Display biggest riser/faller.
+*   [ ] **Sector Radar**: Show hottest genres (Heat Score).
+*   [ ] **Power Score**: Visual indicator for "Dominance + Momentum".
+*   [ ] **UI Integration**: New Bento-grid layout for Home.
+
+### Sprint 3.2: Revenue & Ad Intelligence (Deferred to Jan 11-15)
 *   [ ] Revenue Band Function: `estimate_revenue_band(rank, country)`.
 *   [ ] Ad Dependency Function: `calculate_ad_dependency(...)`.
-*   [ ] UI: Display revenue bands on ChartRow.
+*   [ ] UI: Display revenue bands on lists.
+*   [ ] **Scheduled Scraper**: ✅ Set up daily automation (Completed).
 
-### Sprint 4: "Market Pulse" Dashboard (Planned)
+### Sprint 4: "LiveOps Intelligence" (Planned)
 *   **Sector Heatmap**: Aggregate volatility by Genre/Subgenre.
 *   **Fastest Movers Feed**: Games with >20 rank delta.
 *   **Subgenre Ingestion**: Update scraper to capture subgenre.
