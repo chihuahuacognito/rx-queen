@@ -123,19 +123,21 @@ Based on deep market research, we will build **5 distinct data products** that s
 ### 🚧 Current Sprint
 
 #### Sprint 3.1: Market Pulse UI (Jan 8-12)
-**Phase A: Data Infrastructure**
+**Phase A: Data Infrastructure & Scaling**
 - [x] `genre_stats` & `power_rankings` SQL views
 - [ ] Create `weekly_summaries` table
 - [ ] Create `game_stats` table (lifetime aggregates)
 - [ ] Implement data tiering (21-day retention + weekly rollups)
 - [ ] Local archive script for cold storage
+- [ ] **Expand to 26 countries** (from 4) — See `docs/country_selection_analysis.md`
+- [ ] **Increase to Top 500 games** per chart (from 200)
+- [ ] Update GitHub Actions workflow for new countries
 
 **Phase B: Signal Cards (Command Deck)**
-- [ ] Fastest Rising Game (daily/weekly/monthly toggle)
-- [ ] Biggest Falling Game (daily/weekly/monthly toggle)
+- [ ] Fastest Rising Game (weekly default, daily/monthly toggle)
+- [ ] Biggest Falling Game (weekly default, daily/monthly toggle)
 - [ ] Hottest Rising Genre (Sector Heat)
 - [ ] Coldest Falling Genre
-- [ ] Power Score leader display
 
 **Phase C: Game View Panel**
 - [ ] Slide-out panel on game click

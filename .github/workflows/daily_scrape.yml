@@ -23,18 +23,41 @@ jobs:
         with:
           node-version: '20'
       
-      # ===== SCRAPING =====
+      # ===== SCRAPING (26 countries × 500 games) =====
       - name: Install Scraper Dependencies
         run: cd scraper && npm install
       
-      - name: Run Scraper (US Market)
-        run: node scraper/google_play_fetch.js US 200
-      
-      - name: Run Scraper (Other Markets)
+      # Batch 1: Tier 1 Revenue Markets (7 countries)
+      - name: Scrape Tier 1 - Revenue Markets
         run: |
-          node scraper/google_play_fetch.js GB 200
-          node scraper/google_play_fetch.js JP 200
-          node scraper/google_play_fetch.js IN 200
+          for country in US JP KR DE GB FR TW; do
+            echo "Scraping $country..."
+            node scraper/google_play_fetch.js $country 500
+          done
+      
+      # Batch 2: Tier 2 Soft Launch Markets (6 countries)
+      - name: Scrape Tier 2 - Soft Launch Markets
+        run: |
+          for country in CA AU NZ PH SG FI; do
+            echo "Scraping $country..."
+            node scraper/google_play_fetch.js $country 500
+          done
+      
+      # Batch 3: Tier 3 Dev Hubs (5 countries)
+      - name: Scrape Tier 3 - Dev Hubs
+        run: |
+          for country in IL VN SE TR HK; do
+            echo "Scraping $country..."
+            node scraper/google_play_fetch.js $country 500
+          done
+      
+      # Batch 4: Tier 4 Emerging + Additional (8 countries)
+      - name: Scrape Tier 4 - Emerging Markets
+        run: |
+          for country in BR IN ID SA MX TH MY AE; do
+            echo "Scraping $country..."
+            node scraper/google_play_fetch.js $country 500
+          done
       
       # ===== AUTO-TAGGING (Optional - only if GEMINI_API_KEY is set) =====
       - name: Install Tools Dependencies

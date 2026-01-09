@@ -20,14 +20,12 @@ Signal Cards are high-visibility panels that answer ONE question at a glance. Th
 | Attribute | Specification |
 |:----------|:--------------|
 | **Data Source** | `snapshots` — max(rank_change) where rank_change > 0 |
-| **Time Toggles** | Daily (24h) / Weekly (7d) / Monthly (30d) |
+| **Time Toggles** | Daily (24h) / **Weekly (7d)** [default] / Monthly (30d) |
 | **Display Elements** | |
 | — Game Icon | 48×48px |
 | — Game Name | 16px bold |
-| — Developer Name | 12px muted |
 | — Rank Change | Hero number (+142) in green |
 | — Current Rank | e.g., "Now #23" |
-| — Sparkline | 7-day trend micro-chart |
 | — Genre Pill | e.g., "Puzzle" |
 | **Visual** | Green glow border, ↑ arrow icon |
 | **Interaction** | Click opens Game View Panel |
@@ -41,7 +39,7 @@ Signal Cards are high-visibility panels that answer ONE question at a glance. Th
 | Attribute | Specification |
 |:----------|:--------------|
 | **Data Source** | `snapshots` — min(rank_change) where rank_change < 0 |
-| **Time Toggles** | Daily / Weekly / Monthly |
+| **Time Toggles** | Daily / **Weekly** [default] / Monthly |
 | **Display Elements** | Same as Rising, but red accents |
 | **Visual** | Red glow border, ↓ arrow icon |
 
@@ -76,40 +74,29 @@ Signal Cards are high-visibility panels that answer ONE question at a glance. Th
 
 ---
 
-### Signal Card 5: Power Score Leader
+### ~~Signal Card 5: Power Score Leader~~ (DISCARDED)
 
-**Question Answered**: "Who dominates with both rank AND momentum?"
-
-| Attribute | Specification |
-|:----------|:--------------|
-| **Data Source** | `power_rankings` — max(power_score) |
-| **Display** | |
-| — Game Icon + Name | |
-| — Power Score | Large number (e.g., "94") |
-| — Power Dots | ●●●●● (5/5 filled) |
-| — Rank | Current position |
-| — Velocity | Rank change indicator |
-| **Visual** | Purple/violet glow |
+*Concept discarded — will revisit in future sprint.*
 
 ---
 
 ### Signal Card Layout (Bento Grid)
 
 ```
-┌────────────────────┬────────────────────┬────────────────────┐
-│   🔥 FASTEST       │   ❄️ BIGGEST       │   📊 POWER         │
-│   RISER            │   FALLER           │   LEADER           │
-│                    │                    │                    │
-│   Block Blast      │   Candy Crush      │   Subway Surfers   │
-│   +142 ▲           │   -87 ▼            │   Score: 94        │
-└────────────────────┴────────────────────┴────────────────────┘
-┌─────────────────────────────────────────┬────────────────────┐
-│   🔥 HOTTEST GENRE                      │   ❄️ COLDEST GENRE │
-│                                         │                    │
-│   Arcade  ████████████████  +17.3       │   Card  ████  -4.2 │
-│   Music   ████████████      +15.7       │   Board ███   -3.1 │
-│   Sports  ███████████       +12.1       │   Trivia██    -2.8 │
-└─────────────────────────────────────────┴────────────────────┘
+┌─────────────────────────────────┬─────────────────────────────────┐
+│   🔥 FASTEST RISER              │   ❄️ BIGGEST FALLER             │
+│                                 │                                 │
+│   Block Blast                   │   Candy Crush                   │
+│   +142 ▲  •  Now #23            │   -87 ▼  •  Now #45             │
+│   [Puzzle]                      │   [Casual]                      │
+└─────────────────────────────────┴─────────────────────────────────┘
+┌─────────────────────────────────┬─────────────────────────────────┐
+│   🔥 HOTTEST GENRE              │   ❄️ COLDEST GENRE              │
+│                                 │                                 │
+│   Arcade  ████████████  +17.3   │   Card   ████       -4.2        │
+│   Music   █████████     +15.7   │   Board  ███        -3.1        │
+│   Sports  ████████      +12.1   │   Trivia ██         -2.8        │
+└─────────────────────────────────┴─────────────────────────────────┘
 ```
 
 ---

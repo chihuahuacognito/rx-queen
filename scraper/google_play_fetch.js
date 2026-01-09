@@ -1,18 +1,34 @@
 const gplay = require('google-play-scraper').default || require('google-play-scraper');
 
+// Enable throttling to prevent rate limiting (max 10 requests/second)
+if (gplay.memoized) {
+    gplay.memoized({ throttle: 10 });
+}
+
 (async () => {
     // Arguments: 
     // node script.js [country_code_or_ALL] [limit]
-    // Example: node script.js us 200
-    // Example: node script.js ALL 200
+    // Example: node script.js us 500
+    // Example: node script.js ALL 500
 
     const argCountry = process.argv[2] || 'us';
-    const limit = parseInt(process.argv[3]) || 200;
+    const limit = parseInt(process.argv[3]) || 500;
 
-    // Define target countries
+    // Define target countries (26 total - see docs/country_selection_analysis.md)
     let countries = [];
     if (argCountry.toUpperCase() === 'ALL') {
-        countries = ['us', 'gb', 'ca', 'de', 'jp', 'br', 'in'];
+        countries = [
+            // Tier 1: Revenue (7)
+            'us', 'jp', 'kr', 'de', 'gb', 'fr', 'tw',
+            // Tier 2: Soft Launch (6)
+            'ca', 'au', 'nz', 'ph', 'sg', 'fi',
+            // Tier 3: Dev Hubs (5)
+            'il', 'vn', 'se', 'tr', 'hk',
+            // Tier 4: Emerging (4)
+            'br', 'in', 'id', 'sa',
+            // Additional (4)
+            'mx', 'th', 'my', 'ae'
+        ];
     } else {
         countries = [argCountry];
     }
