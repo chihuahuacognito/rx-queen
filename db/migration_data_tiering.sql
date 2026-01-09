@@ -7,8 +7,8 @@
 -- Aggregated weekly stats for historical trend analysis
 
 CREATE TABLE IF NOT EXISTS weekly_summaries (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    game_id UUID NOT NULL REFERENCES games(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    game_id INTEGER NOT NULL REFERENCES games(id) ON DELETE CASCADE,
     country_code TEXT NOT NULL,
     week_start DATE NOT NULL,
     
@@ -47,7 +47,7 @@ CREATE INDEX IF NOT EXISTS idx_weekly_summaries_country_week
 -- Lifetime aggregates per game
 
 CREATE TABLE IF NOT EXISTS game_stats (
-    game_id UUID PRIMARY KEY REFERENCES games(id) ON DELETE CASCADE,
+    game_id INTEGER PRIMARY KEY REFERENCES games(id) ON DELETE CASCADE,
     
     -- Temporal tracking
     first_seen_at TIMESTAMPTZ,

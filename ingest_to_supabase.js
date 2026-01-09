@@ -146,11 +146,22 @@ async function ingestLatestFiles() {
         }
 
         // Refresh Materialized View (Sprint 3.2.QA)
+        // With many countries, this can timeout - make it non-blocking
         console.log('\n🔄 Refreshing Materialized View (daily_trends)...');
-        const refreshStart = Date.now();
-        await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY daily_trends');
-        const refreshDuration = Date.now() - refreshStart;
-        console.log(`   ✅ View refreshed in ${(refreshDuration / 1000).toFixed(1)}s`);
+        try {
+            const refreshStart = Date.now();
+            // Set a statement timeout for this specific query (2 minutes)
+            await client.query('SET statement_timeout = 120000');
+            await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY daily_trends');
+            const refreshDuration = Date.now() - refreshStart;
+            console.log(`   ✅ View refreshed in ${(refreshDuration / 1000).toFixed(1)}s`);
+        } catch (refreshError) {
+            console.log('   ⚠️ View refresh timed out or failed - data still ingested successfully');
+            console.log('   ℹ️  Run manually in Supabase: REFRESH MATERIALIZED VIEW CONCURRENTLY daily_trends;');
+        } finally {
+            // Reset timeout
+            await client.query('SET statement_timeout = 0').catch(() => { });
+        }
 
     } catch (e) {
         console.error('❌ Error ingestion:', e);
