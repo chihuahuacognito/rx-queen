@@ -122,12 +122,33 @@ Based on deep market research, we will build **5 distinct data products** that s
 
 ### 🚧 Current Sprint
 
-#### Sprint 3.1: Market Pulse UI (Jan 8-10)
+#### Sprint 3.1: Market Pulse UI (Jan 8-12)
+**Phase A: Data Infrastructure**
 - [x] `genre_stats` & `power_rankings` SQL views
-- [ ] Signal Cards (Fastest Riser/Faller)
-- [ ] Sector Heat visualization
-- [ ] Power Score dots indicator
+- [ ] Create `weekly_summaries` table
+- [ ] Create `game_stats` table (lifetime aggregates)
+- [ ] Implement data tiering (21-day retention + weekly rollups)
+- [ ] Local archive script for cold storage
+
+**Phase B: Signal Cards (Command Deck)**
+- [ ] Fastest Rising Game (daily/weekly/monthly toggle)
+- [ ] Biggest Falling Game (daily/weekly/monthly toggle)
+- [ ] Hottest Rising Genre (Sector Heat)
+- [ ] Coldest Falling Genre
+- [ ] Power Score leader display
+
+**Phase C: Game View Panel**
+- [ ] Slide-out panel on game click
+- [ ] Game metadata (Developer, Genre, Subgenre)
+- [ ] Historical stats (All-time best rank, Days on chart)
+- [ ] Rank within subgenre
+- [ ] Trend sparkline (7-day + 30-day)
+- [ ] Placeholder for Theme and Art Style (future AI tagging)
+
+**Phase D: UI Integration**
 - [ ] Command Deck Bento layout
+- [ ] Power Score dots indicator
+- [ ] Responsive design testing
 
 #### Sprint 3.2: Revenue & Ad Intelligence (Jan 11-15)
 - [ ] Revenue Band Function
@@ -181,7 +202,10 @@ Based on deep market research, we will build **5 distinct data products** that s
 |:---------|:--------|
 | `docs/rxqueenmarket.txt` | 5 Data Product concepts with packaging |
 | `docs/mobilegamesolutions.txt` | Deep technical specifications for each product |
-| `docs/ui_design_plan.md` | UI component specifications |
+| `docs/ui_design_plan.md` | UI component specifications & design system |
+| `docs/data_tiering_compatibility_plan.md` | Data architecture & feature compatibility |
+| `docs/country_selection_analysis.md` | Research-based 22-country selection |
+| `docs/scraping_expansion_plan.md` | Scaling plan & cost analysis |
 | `docs/engineering_handbook.md` | Technical lessons learned |
 | `docs/research_brief_dashboard_value.md` | Problem statement & capabilities |
 
