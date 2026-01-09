@@ -53,12 +53,14 @@ jobs:
         if: env.SUPABASE_URL != ''
         run: node ingest_to_supabase.js
       
-      # NOTE: JSON files are NOT committed to repo.
-      # Data goes directly to Supabase, eliminating git race conditions.
-      # If you need file backups, consider uploading to cloud storage instead.
+      # ===== SUBGENRE COVERAGE CHECK =====
+      - name: Check Subgenre Coverage
+        if: env.SUPABASE_URL != '' && env.NTFY_TOPIC != ''
+        run: node tools/verify_subgenre_coverage.js
+        continue-on-error: true
       
       # ===== NOTIFY =====
-      - name: Send Notification
+      - name: Send Completion Notification
         if: env.NTFY_TOPIC != ''
         run: |
           curl -s -d "🎮 Daily scrape complete! Data ingested to Supabase." \

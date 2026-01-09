@@ -1,5 +1,5 @@
 # Strategic Product Roadmap: Rx Queen 2026
-**Last Updated**: Jan 7, 2026
+**Last Updated**: Jan 9, 2026
 
 ---
 
@@ -8,184 +8,197 @@
 ### The Market Gap ("Blue Ocean")
 The Mobile Market Intelligence (MMI) sector is a **"Red Ocean"** dominated by SensorTower, Data.ai, and AppMagic. They compete on *revenue accuracy* and *data volume*—a losing battle without $10M+ in infrastructure.
 
-**Our Positioning**: We don't compete on accuracy. We compete on:
-1.  **Speed of Trend Detection**: "Who is moving fastest?" not "Who is #1?"
-2.  **Narrative Intelligence**: "Why is this game falling?" not just "It's falling."
-3.  **Calibrated Revenue Proxies**: Tiered bands ($5k-$20k) instead of false precision.
-4.  **Low Friction**: Stripe checkout, not sales calls.
+**Our Positioning**: We don't compete on data volume. We compete on:
+1.  **Velocity Intelligence**: "Who is moving fastest?" not "Who is #1?"
+2.  **AI-Enriched Taxonomy**: LLM-generated subgenres, themes, and art styles that stores don't provide.
+3.  **Causal Insights**: "Why is this game spiking?" not just "It's spiking."
+4.  **Cross-Market Arbitrage**: Track trends across 7 economies to predict global breakouts.
 
 ---
 
-## 2. Core Value Propositions
+## 2. The Five Core Data Products
 
-### A. "The Velocity Radar" (Moneyball for Games)
-*   **USP**: Flag games moving from Rank #800 → #200 in 24h.
-*   **Metric**: Volatility Index score.
-*   **Status**: ✅ Implemented (Rank Change column).
+Based on deep market research, we will build **5 distinct data products** that solve specific, expensive problems for our target audiences.
 
-### B. "Calibrated Revenue Estimation"
-*   **Method**: Power Law curve calibrated with public anchors (dev post-mortems, user's own app data).
-*   **Output**: Tiered Bands: `<$5k`, `$5k-$20k`, `$20k-$100k`, `$100k-$500k`, `$500k+`.
-*   **Status**: 🚧 Sprint 3.
+### Product 1: Nano-Trend Velocity Index (NTVI)
+| Attribute | Detail |
+|:----------|:-------|
+| **Problem** | "Fast-Follower Fallacy" — Studios identify trends too late, after CPI has spiked and the market is saturated. |
+| **Solution** | Track aggregate rank velocity by **Tag Cluster** (Subgenre + Theme + Art Style), not individual games. Detect "Emergent" trends before they hit Top 10. |
+| **Key Metric** | Trend Momentum Score per tag cluster |
+| **Presentation** | "Trend Futures" ticker, "Pivot Simulator" tool, Regional Heatmap |
+| **Target Audience** | Game Designers, Producers |
+| **Status** | 📋 Planned (Sprint 4) |
 
-### C. "Ad Dependency Score"
-*   **Logic**: Games ranked high on "Free" but low on "Grossing" are likely ad-dependent.
-*   **Formula**: `Score = (Grossing Rank / Free Rank) * Genre_Weight`.
-*   **Status**: 🚧 Sprint 3.
+### Product 2: Visual Saturation & Fatigue Heatmap
+| Attribute | Detail |
+|:----------|:-------|
+| **Problem** | "Visual Fatigue" — Choosing an art style based on current hits without knowing the audience is tired of it. |
+| **Solution** | Correlate Art Style tags with Rank Decay metrics to calculate "Fatigue Coefficient". Plot on "Blue Ocean Matrix" (Saturation vs Performance). |
+| **Key Metric** | Fatigue Coefficient, "Golden Zone" identification |
+| **Presentation** | "White Space" Visualizer, Competitor Gallery with Art Style grouping |
+| **Target Audience** | UA Managers, Art Directors, Creative Producers |
+| **Status** | 📋 Planned (Sprint 5) |
 
-### D. "Contextual LiveOps Intelligence"
-*   **USP**: Correlate "Last Updated Date" + "Review Sentiment Shifts".
-*   **Insight**: "Game X dropped because version 1.2 caused 'Crash' keyword spike."
-*   **Status**: 📋 Sprint 5 (Planned).
+### Product 3: LiveOps ROAS Simulator (Competitor X-Ray)
+| Attribute | Detail |
+|:----------|:-------|
+| **Problem** | Competitor LiveOps success is a "black box". Teams don't know which event types (Battle Pass, Tournament, Sale) drive the highest ROI. |
+| **Solution** | Parse "What's New" text with LLM, classify event types, correlate with rank volatility to calculate "LiveOps Pulse Score". |
+| **Key Metric** | Pulse Score = (Rank Lift AUC) / (Complexity Index) |
+| **Presentation** | Competitor Timeline with event icons, "ROI Benchmarker" tool, Cadence Analyzer |
+| **Target Audience** | Product Managers, LiveOps Leads |
+| **Status** | 📋 Planned (Sprint 6) |
 
-### E. "Self-Hosted / Open-Source Appeal"
-*   **Target**: Studios paranoid about data privacy or wanting custom SQL access.
-*   **Status**: ✅ Native PostgreSQL support.
+### Product 4: Global Breakout Probability Engine
+| Attribute | Detail |
+|:----------|:-------|
+| **Problem** | "Soft Launch Gamble" — Assuming soft launch success predicts global success. Brazil ≠ US. |
+| **Solution** | Lead-Lag Cross-Correlation across 7 economies. Calculate "Arbitrage Score" for global success probability. |
+| **Key Metric** | P(success) = V(soft_launch) * α(genre) - S(target_market) * β |
+| **Presentation** | "Global Scout" Map, "Crystal Ball" predictive list, Soft Launch Validator |
+| **Target Audience** | Publishers, Executives |
+| **Status** | 📋 Planned (Sprint 7) |
 
----
-
-## 3. Monetization Model
-
-| Tier | Price | Features |
-|:-----|:------|:---------|
-| **Hobbyist** | Free | Top 50 (US only), 7-day history, Revenue Bands *blurred*. |
-| **Professional** | $49/mo | All Countries, Top 200, 90+ day history, Revenue Bands, Ad Score. |
-| **Enterprise** | Custom | API Access, Raw Data Export, Custom Integrations. |
-
----
-
-## 4. Sprint History & Status
-
-### Sprint 1: Foundation ✅ (Completed Jan 3)
-*   [x] Genre Fix: Added `genre` to views and UI.
-*   [x] Deep Dragnet: Scraper fetches Top 200.
-*   [x] Multi-Country: Added US, GB, CA, DE, JP, BR, IN.
-
-### Sprint 2: "Billboard" Redesign ✅ (Completed Jan 5)
-*   [x] UI Pivot: Grid → List View (ChartRow component).
-*   [x] Days on Chart: Calculated from snapshot history.
-*   [x] New Entry Badge: Flags games with no prior data.
-*   [x] Sticky Header: Billboard-style column labels.
-*   [x] Rank #1 Highlight: Special styling for top position.
-*   [ ] *Open Issue*: Duplicate entries (deduplication needed).
-
-### Sprint 3.1: "Market Pulse" & Command Center 🚧 (In Progress Jan 8-10)
-*   **Goal**: Create a high-density "Command Center" home page.
-*   [x] **Views**: `genre_stats` & `power_rankings` SQL views created.
-*   [ ] **Fastest Movers**: Display biggest riser/faller.
-*   [ ] **Sector Radar**: Show hottest genres (Heat Score).
-*   [ ] **Power Score**: Visual indicator for "Dominance + Momentum".
-*   [ ] **UI Integration**: New Bento-grid layout for Home.
-
-### Sprint 3.2: Revenue & Ad Intelligence (Deferred to Jan 11-15)
-*   [ ] Revenue Band Function: `estimate_revenue_band(rank, country)`.
-*   [ ] Ad Dependency Function: `calculate_ad_dependency(...)`.
-*   [ ] UI: Display revenue bands on lists.
-*   [ ] **Scheduled Scraper**: ✅ Set up daily automation (Completed).
-
-### Sprint 4: "LiveOps Intelligence" (Planned)
-*   **Sector Heatmap**: Aggregate volatility by Genre/Subgenre.
-*   **Fastest Movers Feed**: Games with >20 rank delta.
-*   **Subgenre Ingestion**: Update scraper to capture subgenre.
-
-### Sprint 5: LiveOps Intelligence (Planned)
-*   **"What's New" Scraper**: Fetch update text from store pages.
-*   **Review Sentiment**: Scan for "Crash", "Freeze", "Lag" keywords.
-*   **"Why?" Badge**: Display correlation insights per game.
+### Product 5: True-LTV Valuation Model ("Ad-Farm" Detector)
+| Attribute | Detail |
+|:----------|:-------|
+| **Problem** | "Fake Rich" valuations — Games with high downloads but zero profit (Ad Farms). Investors can't distinguish. |
+| **Solution** | Analyze divergence between Free Rank (Downloads) and Grossing Rank (Revenue). High gap = Ad Dependent. |
+| **Key Metric** | Ad Dependency Ratio = Rank(Free) / Rank(Grossing) |
+| **Presentation** | "Due Diligence" Dashboard, Buy/Sell Signal, "Hollow Shell" Alert |
+| **Target Audience** | Investors, M&A Teams, Publisher Scouts |
+| **Status** | 🚧 Partially Started (Ad Dependency Score in Sprint 3.2) |
 
 ---
 
-## 5. Future Features (Competitor Inspiration)
+## 3. The "Unfair Advantage" (Unique Capabilities)
 
-### From IMDb/Rotten Tomatoes:
-*   **Release Date Column**: Distinguish "New Viral Hits" vs "Legacy Games".
-*   **"Weeks on Chart" Badge**: Identify sticky games.
+### A. AI Taxonomist (Hybrid LLM Tagging)
+*   **Granular Subgenres**: "Screw Puzzle", "4X Strategy", "Bullet Heaven"
+*   **Thematic Analysis**: "Sci-Fi", "Medieval", "Anime", "Post-Apocalyptic"
+*   **Art Style Detection**: "Low Poly", "Voxel", "Hyper-Realistic", "Pixel Art"
+*   **Status**: ✅ Implemented via `tools/auto_tag_subgenres.js`
 
-### From SteamDB:
-*   **"Trending" Indicator**: Fire icon for >20 spot jumps.
+### B. High-Frequency Rank Volatility (HFRV)
+*   **Scope**: Top 200 games × 7 economies (US, UK, JP, IN, BR, DE, CA)
+*   **Granularity**: Daily snapshots (scalable to hourly)
+*   **Derived Metrics**: Rank Delta, Power Score, Days on Chart
+*   **Status**: ✅ Implemented
 
-### From Power Users:
-*   **View Toggles**: Billboard View (rich) vs Data Grid (dense/sortable).
-
----
-
-## 6. Data Automation Options (Cloud Scheduler)
-
-> **User Question**: "Will a Windows Task Scheduler run if my PC is off?"
-
-**Answer**: No. Windows Task Scheduler requires your PC to be powered on. Here are alternatives:
-
-### Option A: n8n Cloud ($20/mo)
-*   **How**: Host your n8n workflow on [n8n.cloud](https://n8n.cloud).
-*   **Trigger**: Set a Cron node to run `run_scraper.bat` equivalent (via HTTP node calling a cloud function).
-*   **Effort**: Medium (need to refactor scraper to run in cloud).
-
-### Option B: GitHub Actions (Free)
-*   **How**: Create a `.github/workflows/scrape.yml` that runs `node scraper/google_play_fetch.js` on a schedule.
-*   **Trigger**: `schedule: cron: '0 6 * * *'` (6 AM UTC daily).
-*   **Pros**: Free, reliable, no PC needed.
-*   **Cons**: Need to push scraper code to GitHub and handle secrets for DB connection.
-
-### Option C: Railway / Render / Fly.io (Free Tier)
-*   **How**: Deploy a simple Node.js cron job to a free-tier cloud provider.
-*   **Trigger**: Use `node-cron` library to schedule scraping.
-*   **Pros**: Simple, always-on, free.
-*   **Cons**: May need to expose DB or use a cloud DB (e.g., Supabase/Neon).
-
-### Option D: Supabase + Edge Functions (Recommended for Scale)
-*   **How**: Migrate PostgreSQL to Supabase (free tier: 500MB).
-*   **Trigger**: Supabase Scheduled Functions (cron) to run scraper.
-*   **Pros**: DB + Scheduler + Auth all in one. Free tier generous.
-*   **Cons**: Migration effort.
-
-### Recommendation:
-1.  **Short-Term**: Use **GitHub Actions** (free, reliable, easy to set up).
-2.  **Long-Term**: Migrate to **Supabase** for integrated cloud DB + scheduling.
+### C. Synthetic Scoring Engines
+*   **Power Score**: Dominance (Rank) + Momentum (Velocity)
+*   **Ad Dependency Score**: Free Rank / Grossing Rank
+*   **Genre Health Index**: Aggregate rank velocity by tag cluster
+*   **LiveOps Pulse**: Update correlation with rank spikes
+*   **Status**: 🚧 Power Score done, others planned
 
 ---
 
-## 7. Reusable Asset Inventory
+## 4. Monetization Model (Updated)
 
-| Asset | Status | Notes |
-|:------|:-------|:------|
-| **Scraper** (`google_play_fetch.js`) | 🟢 Core | Fetches Top 200 x 7 countries. |
-| **Ingestion** (`manual_ingest_all.js`) | 🟢 Solid | Needs subgenre mapping. |
-| **DB Views** (`migration_genre_country_fix.sql`) | 🟢 Gold | Powers `daily_trends`. |
-| **UI** (`ChartRow.tsx`, `ChartList.tsx`) | 🟢 Premium | Billboard-style list view. |
-| **Visual System** (`globals.css`) | 🟢 Premium | Glassmorphism/Neon aesthetic. |
-
----
-
-## 8. New Tools (Created Jan 7)
-
-### GitHub Actions
-- **[`.github/workflows/daily_scrape.yml`]**: Runs scraper daily at 6 AM UTC. Push to GitHub to activate.
-
-### Subgenre Tagging (Hybrid Workflow)
-1. **`tools/list_missing_subgenres.js`**: Shows games needing subgenre tags.
-2. **`tools/auto_tag_subgenres.js`**: Uses Gemini AI to suggest subgenres. Requires `GEMINI_API_KEY`.
-3. **`tools/review_subgenres.html`**: Local UI to approve/edit AI suggestions.
-4. **`tools/import_subgenres.js`**: Imports approved subgenres to database.
-
-### Daily Workflow
-```
-1. node tools/list_missing_subgenres.js     # See what's missing
-2. $env:GEMINI_API_KEY="your-key"           # Set API key (PowerShell)
-3. node tools/auto_tag_subgenres.js 100     # Auto-tag 100 games
-4. Open tools/review_subgenres.html         # Approve/edit suggestions
-5. node tools/import_subgenres.js           # Import to DB
-```
+| Tier | Price | Features | Target |
+|:-----|:------|:---------|:-------|
+| **Free** | $0 | Top 50 (US only), 7-day history, Basic charts | Hobbyists |
+| **Pro** | $49/mo | All countries, Top 200, 90-day history, Power Score, Genre Heat | Indie Devs |
+| **Business** | $199/mo | NTVI Trend Radar, Visual Fatigue Heatmap, Competitor X-Ray | Studios, Publishers |
+| **Enterprise** | Custom | Global Breakout Engine, True-LTV Valuator, API Access, Custom Reports | Investors, M&A |
 
 ---
 
-## 9. Immediate Next Actions (This Week)
+## 5. Sprint History & Roadmap
 
-1.  [ ] **Set up GitHub Actions** for scheduled scraping (see Section 6).
-2.  [ ] **Create `migration_revenue_bands.sql`** with revenue band function.
-3.  [ ] **Update `daily_trends` view** to include `estimated_revenue`.
-4.  [ ] **Update `ChartRow.tsx`** to display revenue badge.
-5.  [ ] **Run `ingest_backfill.js`** to fill any missing historical data.
+### ✅ Completed Sprints
+
+#### Sprint 1: Foundation (Jan 3)
+- [x] Genre Fix: Added `genre` to views and UI
+- [x] Deep Dragnet: Scraper fetches Top 200
+- [x] Multi-Country: US, GB, CA, DE, JP, BR, IN
+
+#### Sprint 2: Billboard Redesign (Jan 5)
+- [x] UI Pivot: Grid → List View (ChartRow)
+- [x] Days on Chart, New Entry Badge
+- [x] Sticky Header, Rank #1 Highlight
+
+### 🚧 Current Sprint
+
+#### Sprint 3.1: Market Pulse UI (Jan 8-10)
+- [x] `genre_stats` & `power_rankings` SQL views
+- [ ] Signal Cards (Fastest Riser/Faller)
+- [ ] Sector Heat visualization
+- [ ] Power Score dots indicator
+- [ ] Command Deck Bento layout
+
+#### Sprint 3.2: Revenue & Ad Intelligence (Jan 11-15)
+- [ ] Revenue Band Function
+- [ ] **Ad Dependency Score** (Product 5 foundation)
+- [ ] UI badges for revenue/ad metrics
+
+### 📋 Upcoming Sprints
+
+#### Sprint 4: Nano-Trend Velocity Index (Jan 16-22)
+- [ ] Tag Cluster aggregation logic
+- [ ] Trend Momentum Score calculation
+- [ ] "Trend Futures" ticker UI
+- [ ] Lifecycle tagging (Emergent → Growth → Peak → Saturated)
+
+#### Sprint 5: Visual Fatigue Heatmap (Jan 23-29)
+- [ ] Art Style tag enrichment
+- [ ] Fatigue Coefficient calculation
+- [ ] "Blue Ocean Matrix" visualization
+- [ ] Creative Refresh Alerts
+
+#### Sprint 6: LiveOps Intelligence (Jan 30 - Feb 5)
+- [ ] "What's New" scraper for update text
+- [ ] LLM event classification
+- [ ] LiveOps Pulse Score calculation
+- [ ] Competitor X-Ray Timeline
+
+#### Sprint 7: Global Breakout Engine (Feb 6-12)
+- [ ] Lead-Lag cross-correlation model
+- [ ] Arbitrage Score calculation
+- [ ] "Global Scout" predictive map
+- [ ] Soft Launch Validator tool
 
 ---
 
-This document consolidates all strategy, sprints, and research. Older documents (`sprint_optimization.md`, `design_review_sprint_2.md`, `future_features_analysis.md`) are retained for historical reference but this file is the **single source of truth**.
+## 6. Infrastructure Status
+
+| Component | Status | Notes |
+|:----------|:-------|:------|
+| **Database** | ✅ Supabase | PostgreSQL in cloud, 90K+ snapshots |
+| **Dashboard** | ✅ Vercel | Next.js deployed, live at [URL] |
+| **Scraper** | ✅ GitHub Actions | Daily at 6 AM UTC |
+| **Ingestion** | ✅ Direct to Supabase | No git conflicts |
+| **Notifications** | ✅ ntfy.sh | Push alerts on scrape complete |
+| **AI Tagging** | ✅ Gemini API | Auto-tag with human review |
+
+---
+
+## 7. Key Research Documents
+
+| Document | Purpose |
+|:---------|:--------|
+| `docs/rxqueenmarket.txt` | 5 Data Product concepts with packaging |
+| `docs/mobilegamesolutions.txt` | Deep technical specifications for each product |
+| `docs/ui_design_plan.md` | UI component specifications |
+| `docs/engineering_handbook.md` | Technical lessons learned |
+| `docs/research_brief_dashboard_value.md` | Problem statement & capabilities |
+
+---
+
+## 8. Summary: The Strategic Moat
+
+| Product | Critical Question Answered | Target Audience |
+|:--------|:---------------------------|:----------------|
+| **NTVI** | "What specific mechanic should I build next?" | Game Designers |
+| **Visual Fatigue** | "What art style will lower my CPI?" | UA Managers |
+| **LiveOps X-Ray** | "What event type drives the highest revenue lift?" | Product Managers |
+| **Global Breakout** | "Is my soft launch predicting global success?" | Publishers |
+| **True-LTV** | "Is this studio a sound investment or an ad farm?" | Investors |
+
+**The "Secret Weapon"**: Cross-correlation of LLM Tags + Volatility to reveal causal mechanisms of market success.
+
+---
+
+*This document is the single source of truth for Rx Queen product strategy. Last major update: Jan 9, 2026.*
