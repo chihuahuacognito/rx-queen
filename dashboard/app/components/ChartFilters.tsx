@@ -23,7 +23,7 @@ export function ChartFilters() {
             {/* Title / Context */}
             <div>
                 <h2 className="text-2xl font-black tracking-tight text-white flex items-center gap-3">
-                    Top 200 Charts
+                    Top 500 Charts
                     <span className="text-base font-normal text-slate-500 border-l border-white/10 pl-3">
                         {country}
                     </span>

@@ -5,13 +5,37 @@ import { Globe, ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
 const COUNTRIES = [
-    { code: 'US', name: 'United States' },
-    { code: 'GB', name: 'United Kingdom' },
-    { code: 'CA', name: 'Canada' },
-    { code: 'DE', name: 'Germany' },
-    { code: 'JP', name: 'Japan' },
-    { code: 'BR', name: 'Brazil' },
-    { code: 'IN', name: 'India' },
+    // Tier 1: Revenue Markets
+    { code: 'US', name: 'United States', tier: 'Revenue' },
+    { code: 'JP', name: 'Japan', tier: 'Revenue' },
+    { code: 'KR', name: 'South Korea', tier: 'Revenue' },
+    { code: 'DE', name: 'Germany', tier: 'Revenue' },
+    { code: 'GB', name: 'United Kingdom', tier: 'Revenue' },
+    { code: 'FR', name: 'France', tier: 'Revenue' },
+    { code: 'TW', name: 'Taiwan', tier: 'Revenue' },
+    // Tier 2: Soft Launch
+    { code: 'CA', name: 'Canada', tier: 'Soft Launch' },
+    { code: 'AU', name: 'Australia', tier: 'Soft Launch' },
+    { code: 'NZ', name: 'New Zealand', tier: 'Soft Launch' },
+    { code: 'PH', name: 'Philippines', tier: 'Soft Launch' },
+    { code: 'SG', name: 'Singapore', tier: 'Soft Launch' },
+    { code: 'FI', name: 'Finland', tier: 'Soft Launch' },
+    // Tier 3: Dev Hubs
+    { code: 'IL', name: 'Israel', tier: 'Dev Hubs' },
+    { code: 'VN', name: 'Vietnam', tier: 'Dev Hubs' },
+    { code: 'SE', name: 'Sweden', tier: 'Dev Hubs' },
+    { code: 'TR', name: 'Turkey', tier: 'Dev Hubs' },
+    { code: 'HK', name: 'Hong Kong', tier: 'Dev Hubs' },
+    // Tier 4: Emerging
+    { code: 'BR', name: 'Brazil', tier: 'Emerging' },
+    { code: 'IN', name: 'India', tier: 'Emerging' },
+    { code: 'ID', name: 'Indonesia', tier: 'Emerging' },
+    { code: 'SA', name: 'Saudi Arabia', tier: 'Emerging' },
+    // Additional
+    { code: 'MX', name: 'Mexico', tier: 'Additional' },
+    { code: 'TH', name: 'Thailand', tier: 'Additional' },
+    { code: 'MY', name: 'Malaysia', tier: 'Additional' },
+    { code: 'AE', name: 'UAE', tier: 'Additional' },
 ];
 
 export function CountrySelector() {
