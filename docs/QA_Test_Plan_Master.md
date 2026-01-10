@@ -1,7 +1,7 @@
 # QA Master Test Plan: Rx Queen
-**Date:** January 9, 2026  
-**Version:** 2.0  
-**Scope:** Validation of Sprint 1, 2, & 3.2.QA deliverables, and assessment of Sprint 3.1 readiness.
+**Date:** January 10, 2026  
+**Version:** 3.0  
+**Scope:** Validation of Sprint 1, 2, 3.2.QA, and **Sprint 3.1 Phase A (Scaling)** deliverables.
 
 ## 1. Context & Objectives
 Rx Queen is a mobile market intelligence platform. The objective of this QA cycle is to validate the reliability of the "Public Intelligence" engine, the integrity of the data pipeline, and the functionality of the current dashboard components.
@@ -60,6 +60,20 @@ Rx Queen is a mobile market intelligence platform. The objective of this QA cycl
 | **FE-02** | **Component Existence** | Check for core and Sprint 3.1 components. | Core components present. | `tests/test_frontend_components.js` |
 | **FE-03** | **Filtering Logic** | Test country/category filters. | Filters return correct data. | Manual / Browser |
 
+### 3.5 Sprint 3.1 Phase A: Scaling (Priority: High) ✨ NEW
+
+| ID | Test Case | Description | Expected Result | Script/Method |
+| :--- | :--- | :--- | :--- | :--- |
+| **S31-01** | **26 Countries Scraped** | Verify workflow scraped all 26 countries. | `SELECT DISTINCT country_code FROM snapshots` returns 26 rows. | `tests/test_scaling.js` |
+| **S31-02** | **500 Games Per Country** | Check games scraped per country. | Each country has ~500 games in latest batch. | `tests/test_scaling.js` |
+| **S31-03** | **UI Country Selector** | Open dashboard, check country dropdown. | All 26 countries visible in dropdown. | Manual / Browser |
+| **S31-04** | **UI Header Text** | Check chart header. | Header says "Top 500 Charts". | Manual / Browser |
+| **S31-05** | **weekly_summaries Table** | Verify table exists. | Table exists and is queryable. | `tests/test_scaling.js` |
+| **S31-06** | **game_stats Table** | Verify table exists. | Table exists and is queryable. | `tests/test_scaling.js` |
+| **S31-07** | **Environment Variables** | Verify no hardcoded Supabase credentials in repo. | `grep` for old password returns 0 matches. | `tests/test_security.js` |
+| **S31-08** | **Workflow Success** | GitHub Actions completes without error. | Workflow run status is "success". | GitHub UI |
+| **S31-09** | **Materialized View Graceful Timeout** | Ingestion doesn't fail if view refresh times out. | Log shows "View refresh timed out" but script exits 0. | GitHub Actions Log |
+
 ---
 
 ## 4. Test Scripts Inventory
@@ -71,6 +85,8 @@ Rx Queen is a mobile market intelligence platform. The objective of this QA cycl
 | `tests/test_rank_accuracy.js` | Verifies day-over-day rank math | `node tests/test_rank_accuracy.js` |
 | `tests/test_frontend_components.js` | Checks component file existence | `node tests/test_frontend_components.js` |
 | `tests/test_live_comparison.js` | Outputs DB rankings for live comparison | `node tests/test_live_comparison.js` |
+| `tests/test_scaling.js` | **NEW** - Validates 26 countries, 500 games, new tables | `node tests/test_scaling.js` |
+| `tests/test_security.js` | **NEW** - Checks for hardcoded credentials | `node tests/test_security.js` |
 
 ---
 
@@ -114,5 +130,5 @@ A final `QA_Report.md` will be generated summarizing:
 
 ---
 
-**Last Updated:** January 9, 2026  
-**Version:** 2.0 (Added Live Store Validation)
+**Last Updated:** January 10, 2026  
+**Version:** 3.0 (Added Sprint 3.1 Phase A Scaling Tests)
