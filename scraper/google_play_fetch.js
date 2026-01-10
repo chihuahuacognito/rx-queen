@@ -30,7 +30,8 @@ if (gplay.memoized) {
             'mx', 'th', 'my', 'ae'
         ];
     } else {
-        countries = [argCountry];
+        // Normalize to lowercase (google-play-scraper expects lowercase)
+        countries = [argCountry.toLowerCase()];
     }
 
     const category = 'GAME';
