@@ -13,9 +13,10 @@ export function ChartHeader() {
             </div>
 
             <div className="hidden md:flex items-center gap-8 text-right justify-end">
+                {/* <div className="w-24 text-center">Trend</div> */}
                 <div className="w-24 text-left">Genre</div>
-                <div className="w-16 text-right">Last Week</div>
-                <div className="w-20 text-right">Days on Chart</div>
+                {/* <div className="w-20 text-right hidden lg:block">Power</div> */}
+                <div className="w-20 text-right">Days</div>
             </div>
 
         </div>

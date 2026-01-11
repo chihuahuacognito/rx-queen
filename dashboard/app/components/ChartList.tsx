@@ -7,6 +7,7 @@ import { Loader2 } from 'lucide-react';
 
 interface Game {
     rank: number;
+    game_id: number;
     name: string;
     publisher?: string;
     genre?: string;
@@ -20,13 +21,13 @@ interface Game {
 interface ChartListProps {
     initialGames: Game[];
     currentCountry: string;
-    currentCategory: 'free' | 'grossing';
+    currentCategory: 'free' | 'grossing' | 'paid';
     currentGenre?: string;
 }
 
 export function ChartList({ initialGames, currentCountry, currentCategory, currentGenre }: ChartListProps) {
     const [games, setGames] = useState<Game[]>(initialGames);
-    const [offset, setOffset] = useState(25); // Start after the first 25
+    const [offset, setOffset] = useState(25); // Start after the first 25 (initial load)
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
@@ -35,13 +36,13 @@ export function ChartList({ initialGames, currentCountry, currentCategory, curre
         setLoading(true);
 
         try {
-            const newGames = await getTrendingGames(currentCountry, currentCategory, 25, offset, currentGenre); // Fetch next 25
+            const newGames = await getTrendingGames(currentCountry, currentCategory, 100, offset, currentGenre); // Fetch next 100
 
             if (newGames.length === 0) {
                 setHasMore(false);
             } else {
                 setGames(prev => [...prev, ...newGames]);
-                setOffset(prev => prev + 25);
+                setOffset(prev => prev + 100);
             }
         } catch (error) {
             console.error("Failed to load more", error);
@@ -72,7 +73,7 @@ export function ChartList({ initialGames, currentCountry, currentCategory, curre
                         className="flex items-center gap-2 px-8 py-3 bg-white/5 hover:bg-white/10 rounded-full font-bold text-slate-300 border border-white/10 transition-all disabled:opacity-50"
                     >
                         {loading && <Loader2 className="animate-spin" size={18} />}
-                        {loading ? 'Loading Charts...' : 'Load Next 25'}
+                        {loading ? 'Loading Charts...' : 'Load Next 100'}
                     </button>
                 ) : (
                     <span className="text-slate-600 font-medium">End of Charts</span>

@@ -1,11 +1,15 @@
 'use client';
 
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { ArrowUp, ArrowDown, Minus } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { Sparkline } from './ui/Sparkline';
+import { PowerDots } from './ui/PowerDots';
 
 interface ChartRowProps {
+    game_id: number;
     rank: number;
     name: string;
     publisher?: string;
@@ -22,6 +26,7 @@ interface ChartRowProps {
 }
 
 export function ChartRow({
+    game_id,
     rank,
     name,
     publisher = 'Unknown',
@@ -33,12 +38,20 @@ export function ChartRow({
     rank_change,
     className
 }: ChartRowProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     // Rank Hierarchy Logic
     const isRank1 = rank === 1;
     const isRank2 = rank === 2;
     const isRank3 = rank === 3;
     const isTop3 = rank <= 3;
+
+    const handleClick = () => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('game', String(game_id));
+        router.push(`/?${params.toString()}`, { scroll: false });
+    };
 
     // Dynamic Styles based on Rank
     const rankColor = isRank1 ? "text-[#FFD700] drop-shadow-[0_4px_8px_rgba(255,215,0,0.4)]" :
@@ -52,11 +65,13 @@ export function ChartRow({
                 "bg-[#0f172a] border-b border-indigo-500/5 hover:bg-white/[0.02]";
 
     return (
-        <div className={twMerge(
-            "group relative flex items-center w-full h-[88px] px-6 transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] hover:z-10 hover:border-indigo-500/20",
-            rowBackground,
-            className
-        )}>
+        <div
+            onClick={handleClick}
+            className={twMerge(
+                "group relative flex items-center w-full h-[88px] px-6 transition-all duration-300 ease-out hover:scale-[1.01] hover:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] hover:z-10 hover:border-indigo-500/20 cursor-pointer",
+                rowBackground,
+                className
+            )}>
 
             {/* 1. RANK COLUMN */}
             <div className="w-16 flex-shrink-0 flex flex-col items-center justify-center mr-6">
@@ -120,6 +135,20 @@ export function ChartRow({
 
             {/* 3. METRICS COLUMN */}
             <div className="hidden md:flex items-center gap-8 text-right justify-end">
+                {/* Trend Graph (Hidden) */}
+                {/* <div className="w-24 flex items-center justify-center opacity-50 group-hover:opacity-100 transition-opacity">
+                    <Sparkline
+                        data={[
+                            rank + (rank_change || 0),
+                            rank + ((rank_change || 0) * 0.5) + ((rank % 2 === 0 ? 1 : -1) * 2),
+                            rank
+                        ].map(r => 200 - r)} // Invert rank so #1 is high
+                        color={rank_change > 0 ? "#10B981" : rank_change < 0 ? "#F43F5E" : "#64748B"}
+                        width={60}
+                        height={20}
+                    />
+                </div> */}
+
                 {/* Genre Column */}
                 <div className="w-24 text-left flex items-center">
                     <span className="text-xs font-bold text-slate-500 bg-slate-800/50 px-2 py-1 rounded border border-white/5 whitespace-nowrap overflow-hidden text-ellipsis max-w-full">
@@ -127,18 +156,19 @@ export function ChartRow({
                     </span>
                 </div>
 
-                {/* Last Week */}
-                <div className="w-16 flex flex-col items-end opacity-60 group-hover:opacity-100 transition-opacity">
-                    <span className="font-serif text-2xl text-slate-200 leading-none">
-                        {last_week_rank || '-'}
-                    </span>
-                </div>
+                {/* Power Score (Hidden) */}
+                {/* <div className="w-20 hidden lg:flex flex-col items-end justify-center">
+                    <PowerDots
+                        score={Math.min(100, Math.max(1, 100 - (rank / 2) + ((rank_change || 0) * 0.5)))}
+                    />
+                </div> */}
 
                 {/* Days on Chart (Just Number) */}
                 <div className="w-20 flex flex-col items-end opacity-60 group-hover:opacity-100 transition-opacity">
                     <span className="font-serif text-2xl text-slate-200 leading-none">
                         {days_on_chart}
                     </span>
+                    <span className="text-[10px] text-slate-500 font-medium uppercase tracking-wider">DAYS</span>
                 </div>
             </div>
 

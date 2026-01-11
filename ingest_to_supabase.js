@@ -88,9 +88,8 @@ async function ingestLatestFiles() {
             }
             console.log(`   ✅ Games processed: ${gamesUpdated}`);
 
-            // 2. Insert Snapshots
-            let snapshotsInserted = 0;
-            const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+            // 2. Upsert Snapshots (a game can appear in multiple charts: FREE, PAID, GROSSING)
+            let snapshotsUpserted = 0;
 
             for (const game of data) {
                 // Determine store_id (use appId field from scraper)
@@ -102,65 +101,69 @@ async function ingestLatestFiles() {
                 if (!storeId) continue;
 
                 const gameId = gameIds[storeId];
-                if (!gameId) continue; // Should not happen
+                if (!gameId) continue;
 
                 const country = game.country || 'US';
                 const capturedAt = new Date().toISOString();
 
-                // Estimates (Simple logic for now, similar to ingest_backfill.js)
-                const revenue = 0; // Placeholder
-                const downloads = 0; // Placeholder
+                // Determine which rank field to set based on collection type
+                const rankFree = game.collection === 'TOP_FREE' ? game.rank : null;
+                const rankPaid = game.collection === 'TOP_PAID' ? game.rank : null;
+                const rankGrossing = game.collection === 'TOP_GROSSING' ? game.rank : null;
 
-                // Avoid duplicate snapshots for same day (idempotency)
-                // We check if a snapshot exists for this game+country+today
-                const exists = await client.query(`
-                    SELECT id FROM snapshots 
-                    WHERE game_id = $1 
-                    AND country_code = $2 
-                    AND date_trunc('day', captured_at AT TIME ZONE 'UTC') = date_trunc('day', $3::timestamp AT TIME ZONE 'UTC')
-                `, [gameId, country, capturedAt]);
-
-                if (exists.rows.length === 0) {
-                    // Determine rank fields based on collection type
-                    const rankFree = game.collection === 'TOP_FREE' ? game.rank : null;
-                    const rankGrossing = game.collection === 'TOP_GROSSING' ? game.rank : null;
-
-                    await client.query(`
-                        INSERT INTO snapshots (
-                            game_id, country_code, rank_grossing, rank_free, 
-                            rating, reviews_count, revenue_estimate, downloads_estimate, captured_at
-                        )
-                        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
-                    `, [
-                        gameId, country,
-                        rankGrossing,
-                        rankFree,
-                        parseFloat(game.scoreText) || 0,
-                        0, // reviews count
-                        revenue, downloads, capturedAt
-                    ]);
-                    snapshotsInserted++;
-                }
+                // UPSERT: Insert new snapshot OR update existing one with the new rank field
+                // Uses unique index: idx_snapshots_game_country_day_unique
+                await client.query(`
+                    INSERT INTO snapshots (
+                        game_id, country_code, rank_free, rank_paid, rank_grossing, 
+                        rating, reviews_count, revenue_estimate, downloads_estimate, captured_at
+                    )
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                    ON CONFLICT (game_id, country_code, (date_trunc('day', captured_at AT TIME ZONE 'UTC')))
+                    DO UPDATE SET
+                        rank_free = COALESCE(snapshots.rank_free, EXCLUDED.rank_free),
+                        rank_paid = COALESCE(snapshots.rank_paid, EXCLUDED.rank_paid),
+                        rank_grossing = COALESCE(snapshots.rank_grossing, EXCLUDED.rank_grossing),
+                        rating = COALESCE(EXCLUDED.rating, snapshots.rating)
+                `, [
+                    gameId, country,
+                    rankFree, rankPaid, rankGrossing,
+                    parseFloat(game.scoreText) || 0,
+                    0, 0, 0, capturedAt
+                ]);
+                snapshotsUpserted++;
             }
-            console.log(`   ✅ Snapshots inserted: ${snapshotsInserted}`);
+            console.log(`   ✅ Snapshots upserted: ${snapshotsUpserted}`);
         }
 
-        // Refresh Materialized View (Sprint 3.2.QA)
-        // With many countries, this can timeout - make it non-blocking
-        console.log('\n🔄 Refreshing Materialized View (daily_trends)...');
+        // Refresh Trends Cache (New Table Strategy)
+        console.log('\n🔄 Refreshing Daily Trends Cache (Incremental)...');
         try {
-            const refreshStart = Date.now();
-            // Set a statement timeout for this specific query (2 minutes)
-            await client.query('SET statement_timeout = 120000');
-            await client.query('REFRESH MATERIALIZED VIEW CONCURRENTLY daily_trends');
-            const refreshDuration = Date.now() - refreshStart;
-            console.log(`   ✅ View refreshed in ${(refreshDuration / 1000).toFixed(1)}s`);
+            const { spawn } = require('child_process');
+            const path = require('path');
+
+            // Spawn internal script to handle refresh without timeouts
+            const scriptPath = path.join(__dirname, 'scripts', 'refresh_trends_table.js');
+
+            await new Promise((resolve, reject) => {
+                const child = spawn('node', [scriptPath], {
+                    stdio: 'inherit',
+                    env: process.env
+                });
+
+                child.on('close', (code) => {
+                    if (code === 0) {
+                        console.log('   ✅ Cache refresh successful');
+                        resolve();
+                    } else {
+                        console.error(`   ❌ Cache refresh failed with code ${code}`);
+                        resolve(); // Don't block ingestion
+                    }
+                });
+            });
+
         } catch (refreshError) {
-            console.log('   ⚠️ View refresh timed out or failed - data still ingested successfully');
-            console.log('   ℹ️  Run manually in Supabase: REFRESH MATERIALIZED VIEW CONCURRENTLY daily_trends;');
-        } finally {
-            // Reset timeout
-            await client.query('SET statement_timeout = 0').catch(() => { });
+            console.log('   ⚠️ Refresh script error:', refreshError.message);
         }
 
     } catch (e) {

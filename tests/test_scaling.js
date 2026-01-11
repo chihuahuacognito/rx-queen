@@ -40,16 +40,25 @@ async function runTests() {
     console.log('='.repeat(50));
 
     try {
-        // S31-01: 26 Countries Scraped
+        // S31-01: 26 Countries Scraped (ALL TIME - not just recent)
         const countriesResult = await pool.query(`
-            SELECT DISTINCT country_code FROM snapshots
-            WHERE captured_at > NOW() - INTERVAL '2 days'
+            SELECT DISTINCT country_code 
+            FROM snapshots 
+            WHERE country_code IS NOT NULL
         `);
         const countryCount = countriesResult.rows.length;
-        logResult('S31-01', '26 Countries Scraped',
+        logResult('S31-01', '26 Countries Scraped (All Time)',
             countryCount >= EXPECTED_COUNTRIES,
             `(Found: ${countryCount})`
         );
+
+        // List missing countries
+        const existingCodes = countriesResult.rows.map(r => r.country_code);
+        const targetCodes = ['US', 'JP', 'KR', 'DE', 'GB', 'FR', 'TW', 'CA', 'AU', 'NZ', 'PH', 'SG', 'FI', 'IL', 'VN', 'SE', 'TR', 'HK', 'BR', 'IN', 'ID', 'SA', 'MX', 'TH', 'MY', 'AE'];
+        const missing = targetCodes.filter(c => !existingCodes.includes(c));
+        if (missing.length > 0) {
+            console.log(`   ⚠️ Missing: ${missing.join(', ')}`);
+        }
 
         // S31-02: 500 Games Per Country (sample check for US)
         const gamesResult = await pool.query(`

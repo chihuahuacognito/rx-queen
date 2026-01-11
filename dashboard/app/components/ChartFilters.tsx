@@ -12,7 +12,7 @@ export function ChartFilters() {
     const currentCategory = searchParams.get('category') || 'free'; // Default to 'free' per user request
     const country = searchParams.get('country') || 'US';
 
-    const handleCategory = (cat: 'free' | 'grossing') => {
+    const handleCategory = (cat: 'free' | 'grossing' | 'paid') => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('category', cat);
         router.push(`/?${params.toString()}`);
@@ -23,7 +23,7 @@ export function ChartFilters() {
             {/* Title / Context */}
             <div>
                 <h2 className="text-2xl font-black tracking-tight text-white flex items-center gap-3">
-                    Top 500 Charts
+                    Top 200 Charts
                     <span className="text-base font-normal text-slate-500 border-l border-white/10 pl-3">
                         {country}
                     </span>
@@ -45,6 +45,17 @@ export function ChartFilters() {
                         )}
                     >
                         Top Grossing
+                    </button>
+                    <button
+                        onClick={() => handleCategory('paid')}
+                        className={clsx(
+                            "px-4 py-1.5 text-sm font-bold rounded-md transition-all",
+                            currentCategory === 'paid'
+                                ? "bg-white text-black shadow-lg"
+                                : "text-slate-400 hover:text-white"
+                        )}
+                    >
+                        Top Paid
                     </button>
                     <button
                         onClick={() => handleCategory('free')}

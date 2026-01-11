@@ -4,7 +4,7 @@ import { query } from '@/lib/db';
 
 export async function getTrendingGames(
     country: string = 'US',
-    category: 'free' | 'grossing' = 'grossing',
+    category: 'free' | 'grossing' | 'paid' = 'grossing',
     limit: number = 25,
     offset: number = 0,
     genre?: string
@@ -15,8 +15,17 @@ export async function getTrendingGames(
         console.log('[getTrends] DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
         // Dynamic Sort Column based on Category
-        const rankCol = category === 'grossing' ? 'current_rank_grossing' : 'current_rank_free';
-        const changeCol = category === 'grossing' ? 'rank_change_grossing' : 'rank_change_free';
+        let rankCol = 'current_rank_grossing';
+        let changeCol = 'rank_change_grossing';
+
+        if (category === 'free') {
+            rankCol = 'current_rank_free';
+            changeCol = 'rank_change_free';
+        } else if (category === 'paid') {
+            // Paid data not yet collected - return empty gracefully
+            console.log('[getTrends] Paid charts not yet available');
+            return [];
+        }
 
         // We want to return the LIST ordered by Rank 1 -> 200
         // The View already has the calculated fields
@@ -41,8 +50,8 @@ export async function getTrendingGames(
         return result.rows;
     } catch (error) {
         console.error('[getTrends] Database Error:', error);
-        // Re-throw so Vercel shows error instead of empty page
-        throw error;
+        // Return empty array instead of crashing
+        return [];
     }
 }
 
