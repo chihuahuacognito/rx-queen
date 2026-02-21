@@ -19,7 +19,9 @@ if (!connectionString) {
 
 const pool = new Pool({
     connectionString,
-    ssl: { rejectUnauthorized: false }
+    ssl: { rejectUnauthorized: false },
+    connectionTimeoutMillis: 10000,  // 10s to connect
+    statement_timeout: 60000         // 60s max per query
 });
 
 const DATA_DIR = path.join(__dirname, 'data');
